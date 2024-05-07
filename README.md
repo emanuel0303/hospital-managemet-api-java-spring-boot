@@ -1,2 +1,32 @@
-# hospital-managemet-api-java-spring-boot
- The "Hospital Management API" developed in Java with Spring Boot is a software application designed to facilitate the management of various aspects within a hospital environment. This API offers a set of endpoints or services that enable functionalities such as patient registration, appointment scheduling, doctor and staff management, medical record keeping, billing, and more. Leveraging the Spring Boot framework provides advantages like rapid development, ease of configuration, and robustness. Overall, the Hospital Management API aims to streamline hospital operations, enhance efficiency, and improve patient care through modern software solutions.
+# 🏥 Hospital Management API
+
+The Hospital Management API, developed in Java with Spring Boot, streamlines hospital operations and enhances patient and doctor care.
+
+## 🚀 Features
+- Patient registration and management
+- Doctor registration and management
+- Appointment scheduling for patients
+- Medical record keeping
+
+## 🛠️ Technologies Used
+- Java
+- Spring Boot
+- RESTful API
+- MySQL/PostgreSQL
+- Maven/Gradle
+
+## 🏁 Getting Started
+1. Clone the repository.
+2. Set up a database (MySQL/PostgreSQL).
+3. Configure database properties in `application.properties`.
+4. Build and run the application.
+5. Access API endpoints to manage hospital activities.
+
+## 📡 API Endpoints
+- `/patients`: Manage patient information.
+- `/doctors`: Manage doctor profiles.
+- `/appointments`: Schedule appointments.
+- `/medical-records`: Maintain medical records.
+
+## 🌟 License
+This project is licensed under the [Apache License 2.0](LICENSE).
