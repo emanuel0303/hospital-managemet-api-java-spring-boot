@@ -10,7 +10,7 @@ public interface DoctorService {
 
     List<Doctor> getDoctors();
     
-    void addDoctor(Doctor doctor);
+    void addDoctor(DoctorDTO doctorDTO);
 
     String deleteDoctor(Integer drid);
 
