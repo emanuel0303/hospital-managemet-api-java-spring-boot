@@ -72,14 +72,18 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public String updatePatientById(Integer id, Patient patient) {
-        //check whether student is in database or not
-        patientRepository
-                .findById(id)
+        // Check whether patient exists in the database or not
+        Patient existingPatient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid Patient id " + id));
 
-        patient.setId(id);
+        // Merge changes from the incoming Patient object to the existingPatient entity
+        modelMapper.map(patient, existingPatient);
 
-        patientRepository.save(patient);
+        // Ensure the ID remains the same
+        existingPatient.setId(id);
+
+        // Save the updated patient entity
+        patientRepository.save(existingPatient);
 
         return "Patient with ID " + id + " Updated successfully.";
     }
@@ -133,7 +137,7 @@ public class PatientServiceImpl implements PatientService {
                 throw new RuntimeException("Appointment slot is already taken.");
             }
 
-            // Map DTO to Appointment entity
+            // Create AppointmentDTO and map it to Appointment entity
             AppointmentDTO appointmentDTO = new AppointmentDTO(id, drid, date, time);
             Appointment appointment = modelMapper.map(appointmentDTO, Appointment.class);
 
