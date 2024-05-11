@@ -10,6 +10,4 @@ public class AppointmentDTO {
     private String date;
     private String time;
 
-    public AppointmentDTO(Integer id, Integer drid, String date, String time) {
-    }
 }
