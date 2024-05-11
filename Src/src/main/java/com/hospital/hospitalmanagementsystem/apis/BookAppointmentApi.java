@@ -1,5 +1,7 @@
 package com.hospital.hospitalmanagementsystem.apis;
 
+import com.hospital.hospitalmanagementsystem.entity.Patient;
+import com.hospital.hospitalmanagementsystem.service.DoctorService;
 import com.hospital.hospitalmanagementsystem.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -7,20 +9,35 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class BookAppointmentApi {
-    // Declare an instance variable for PatientService
     private final PatientService patientService;
+    private final DoctorService doctorService;
 
-    // Constructor for BookAppointmentApi class to inject PatientService
-    @Autowired
-    public BookAppointmentApi(PatientService patientService) {
+    public BookAppointmentApi(PatientService patientService, DoctorService doctorService) {
         this.patientService = patientService;
+        this.doctorService = doctorService;
     }
 
-    // Method to book appointment
     public ResponseEntity<String> bookAppointment(Integer id, Integer drid, String date, String time) {
-        // Delegate the appointment booking logic to the PatientService
-        patientService.bookAppointment(id, drid, date, time);
-        String message = "Appointment booked successfully.";
-        return ResponseEntity.ok().body(message);
+        try {
+            // Retrieve patient and doctor names
+            Patient patient = patientService.getPatientById(id);
+            String patientName = patient.getPatientname();
+            String doctorName = doctorService.getDoctorNameById(drid);
+
+            // Delegate the appointment booking logic to the PatientService
+            String appointmentEndTime = patientService.bookAppointment(id, drid, date, time);
+
+            // Return success response with appointment details
+            String successMessage = "Appointment booked successfully.\n" +
+                    "Patient Name: " + patientName + "\n" +
+                    "Doctor Name: " + doctorName + "\n" +
+                    "Appointment Date: " + date + "\n" +
+                    "Appointment Time: " + time + "\n" +
+                    "Appointment End Time: " + appointmentEndTime;
+            return ResponseEntity.ok(successMessage);
+        } catch (Exception e) {
+            // Return error response if booking fails
+            return ResponseEntity.badRequest().body("Failed to book appointment: " + e.getMessage());
+        }
     }
 }
