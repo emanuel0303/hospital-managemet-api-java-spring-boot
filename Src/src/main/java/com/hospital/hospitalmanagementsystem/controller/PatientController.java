@@ -8,6 +8,8 @@ import com.hospital.hospitalmanagementsystem.entity.Patient;
 import com.hospital.hospitalmanagementsystem.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,13 +45,23 @@ public class PatientController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addPatient(@RequestBody PatientDTO patient) {
-        return addPatientApi.addPatient(patient);
+    public ResponseEntity<String> addPatient(@Validated @RequestBody PatientDTO patientDTO, BindingResult result) {
+        if (result.hasErrors()) {
+            // If there are validation errors, construct error message and return bad request response
+            String errorMessage = result.getFieldErrors().stream()
+                    .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                    .findFirst()
+                    .orElse("Validation failed");
+            return ResponseEntity.badRequest().body(errorMessage);
+        }
+
+        // If validation passes, proceed with adding the patient
+        return addPatientApi.addPatient(patientDTO);
     }
 
     @GetMapping()
     public List<Patient> getPatients() {
-         return patientService.getPatients();
+        return patientService.getPatients();
     }
 
     @GetMapping("/get")
