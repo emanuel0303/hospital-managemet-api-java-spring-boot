@@ -19,7 +19,7 @@ public class Appointment {
     private Patient patient;
 
     @ManyToOne
-    @JoinColumn(name = "doctor_id") // Assuming 'doctor_id' is the foreign key column in the appointments table
+    @JoinColumn(name = "doctor_id") 
     private Doctor doctor;
 
     @Column(name = "appointment_date")
