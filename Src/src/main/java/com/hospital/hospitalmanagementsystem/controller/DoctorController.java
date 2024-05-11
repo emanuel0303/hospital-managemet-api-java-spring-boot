@@ -39,8 +39,8 @@ public class DoctorController {
     }
 
     @PostMapping("/add")
-    public String addDoctor(@RequestBody Doctor doctor) {
-        return addDoctorApi.addDoctor(doctor);
+    public String addDoctor(@RequestBody DoctorDTO doctorDTO) {
+        return addDoctorApi.addDoctor(doctorDTO);
     }
 
     @GetMapping()
@@ -55,24 +55,17 @@ public class DoctorController {
 
     @PutMapping("/update/{drid}")
     public ResponseEntity<String> updateDoctor(@PathVariable Integer drid, @RequestBody Doctor doctor) {
-        updateDoctorApi.updateDoctor(drid, doctor);
-        String message = "Doctor with ID " + drid + " updated successfully.";
-
-        return ResponseEntity.ok().body(message);
+       return updateDoctorApi.updateDoctor(drid, doctor);
     }
 
     @DeleteMapping("/delete/{drid}")
     public ResponseEntity<String> deleteDoctor(@PathVariable Integer drid) {
-        deleteDoctorApi.deleteDoctorById(drid);
-        String message = "Doctor with ID " + drid + " deleted successfully.";
-        return ResponseEntity.ok().body(message);
+        return deleteDoctorApi.deleteDoctorById(drid);
+
     }
 
     @PatchMapping("/update/{drid}")
     public ResponseEntity<String> patchDoctor(@PathVariable Integer drid, @RequestBody DoctorDTO doctorDTO) {
-        patchUpdateDoctorApi.updateDoctor(drid, doctorDTO);
-
-        String message = "Doctor with ID " + drid + " updated successfully.";
-        return ResponseEntity.ok().body(message);
+        return patchUpdateDoctorApi.updateDoctor(drid, doctorDTO);
     }
 }
