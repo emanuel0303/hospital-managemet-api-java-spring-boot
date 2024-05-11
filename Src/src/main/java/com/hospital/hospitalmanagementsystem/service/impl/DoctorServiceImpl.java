@@ -4,9 +4,11 @@ package com.hospital.hospitalmanagementsystem.service.impl;
 import com.hospital.hospitalmanagementsystem.dto.DoctorDTO;
 import com.hospital.hospitalmanagementsystem.entity.Appointment;
 import com.hospital.hospitalmanagementsystem.entity.Doctor;
+import com.hospital.hospitalmanagementsystem.entity.Patient;
 import com.hospital.hospitalmanagementsystem.exception.DoctorNotFoundException;
 import com.hospital.hospitalmanagementsystem.repository.AppointmentRepository;
 import com.hospital.hospitalmanagementsystem.repository.DoctorRepository;
+import com.hospital.hospitalmanagementsystem.repository.PatientRepository;
 import com.hospital.hospitalmanagementsystem.service.DoctorService;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -26,16 +28,19 @@ public class DoctorServiceImpl implements DoctorService {
     private final DoctorRepository doctorRepository;
     private final ModelMapper modelMapper;
     private final AppointmentRepository appointmentRepository;
+    private final PatientRepository patientRepository;
 
 
     @Autowired
     public DoctorServiceImpl(DoctorRepository doctorRepository,
                              ModelMapper modelMapper,
-                             AppointmentRepository appointmentRepository) {
+                             AppointmentRepository appointmentRepository,
+                             PatientRepository patientRepository) {
 
         this.doctorRepository = doctorRepository;
         this.modelMapper = modelMapper;
         this.appointmentRepository = appointmentRepository;
+        this.patientRepository = patientRepository;
     }
 
 
@@ -58,6 +63,12 @@ public class DoctorServiceImpl implements DoctorService {
         // Retrieve doctor by ID
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new DoctorNotFoundException("Doctor not found with id: " + doctorId));
+
+        // Retrieve associated patient records
+        List<Patient> patients = patientRepository.findByDoctorDrid(doctorId);
+
+        // Delete associated patient records
+        patientRepository.deleteAll(patients);
 
         // Retrieve appointments associated with the doctor
         List<Appointment> appointments = appointmentRepository.findByDoctorDrid(doctorId);
