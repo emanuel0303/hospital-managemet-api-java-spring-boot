@@ -1,4 +1,4 @@
-package com.hospital.hospitalmanagementsystem.exception;
+package com.hospital.hospitalmanagementsystem.Exception;
 
 public class PatientNotFoundException extends RuntimeException{
     public PatientNotFoundException() {
