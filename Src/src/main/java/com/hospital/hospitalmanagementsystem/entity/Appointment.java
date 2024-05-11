@@ -29,4 +29,6 @@ public class Appointment {
     private LocalTime appointmentTime;
 
 
+    public void setAppointmentEndTime(LocalTime appointmentEndTime) {
+    }
 }
