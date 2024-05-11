@@ -10,7 +10,7 @@ public interface PatientService {
 
     List<Patient> getPatients();
 
-    String deletePatient(Integer id);
+    void deletePatient(Integer id);
 
     String updateDisease(Integer id, PatientDTO patientDTO);
 
