@@ -1,0 +1,14 @@
+//Run this Sql Commands in MySql database for allowing On Delete Cascade
+//Patients Table
+ALTER TABLE patients
+ADD CONSTRAINT FK_patients_doctors
+FOREIGN KEY (doctor_id)
+REFERENCES doctors(drid)
+ON DELETE CASCADE;
+
+//Appointments Table
+ALTER TABLE appointments
+ADD CONSTRAINT fk_doctor_id
+FOREIGN KEY (doctor_id)
+REFERENCES doctors(drid)
+ON DELETE CASCADE;

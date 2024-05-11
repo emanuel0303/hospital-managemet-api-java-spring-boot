@@ -1,6 +1,8 @@
 package com.hospital.hospitalmanagementsystem.service.impl;
 
-import com.hospital.hospitalmanagementsystem.dto.AppointmentDTO;
+import com.hospital.hospitalmanagementsystem.dto.DoctorDTO;
+import com.hospital.hospitalmanagementsystem.exception.PatientNotFoundException;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import com.hospital.hospitalmanagementsystem.dto.PatientDTO;
 import com.hospital.hospitalmanagementsystem.entity.Appointment;
@@ -48,14 +50,20 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public String deletePatient(Integer id) {
-        // Check whether the patient is in the database or not
-        Patient patient = patientRepository
-                .findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid Patient id " + id));
+    @Transactional
+    public void deletePatient(Integer patientId) {
+        // Retrieve patient by ID
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new PatientNotFoundException("Patient not found with id: " + patientId));
 
+        // Retrieve appointments associated with the patient
+        List<Appointment> appointments = appointmentRepository.findByPatientId(patientId);
+
+        // Delete appointments associated with the patient
+        appointmentRepository.deleteAll(appointments);
+
+        // Delete the patient
         patientRepository.delete(patient);
-        return "Patient with ID " + id + " deleted successfully.";
     }
 
     @Override
@@ -72,29 +80,34 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public String updatePatientById(Integer id, Patient patient) {
-        //check whether student is in database or not
-        patientRepository
-                .findById(id)
+        // Check whether patient exists in the database or not
+        Patient existingPatient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid Patient id " + id));
 
-        patient.setId(id);
+        // Merge changes from the incoming Patient object to the existingPatient entity
+        modelMapper.map(patient, existingPatient);
 
-        patientRepository.save(patient);
+        // Ensure the ID remains the same
+        existingPatient.setId(id);
+
+        // Save the updated patient entity
+        patientRepository.save(existingPatient);
 
         return "Patient with ID " + id + " Updated successfully.";
     }
 
     @Override
-    public void addPatient(PatientDTO patientDTO) {
+    public Patient addPatient(PatientDTO patientDTO) {
         // Map data from DTO to entity
         Patient patient = modelMapper.map(patientDTO, Patient.class);
 
         patientRepository.save(patient);
+        return patient;
     }
 
 
     @Override
-    public void bookAppointment(Integer id, Integer drid, String date, String time) {
+    public String bookAppointment(Integer id, Integer drid, String date, String time) {
         try {
             // Parse date and time
             LocalDate appointmentDate = LocalDate.parse(date);
@@ -107,6 +120,9 @@ public class PatientServiceImpl implements PatientService {
             // Retrieve the doctor entity using the drid
             Doctor doctor = doctorRepository.findById(drid)
                     .orElseThrow(() -> new RuntimeException("Doctor not found with id: " + drid));
+
+            // Map Doctor entity to DoctorDTO (if needed)
+            DoctorDTO doctorDTO = modelMapper.map(doctor, DoctorDTO.class);
 
             // Check if the appointment date is in the future
             if (appointmentDate.isBefore(LocalDate.now())) {
@@ -133,16 +149,35 @@ public class PatientServiceImpl implements PatientService {
                 throw new RuntimeException("Appointment slot is already taken.");
             }
 
-            // Map DTO to Appointment entity
-            AppointmentDTO appointmentDTO = new AppointmentDTO(id, drid, date, time);
-            Appointment appointment = modelMapper.map(appointmentDTO, Appointment.class);
+            // Check if the patient already has an appointment with the specified doctor on the given date
+            if (isPatientAlreadyBooked(patient, doctor, appointmentDate)) {
+                throw new RuntimeException("Patient already has an appointment with this doctor on the specified date.");
+            }
+
+            // Add buffer time (30 minutes) to the appointment duration
+            LocalTime appointmentEndTime = appointmentTime.plusMinutes(30);
+
+            // Create appointment entity
+            Appointment appointment = new Appointment();
+            appointment.setPatient(patient);
+            appointment.setDoctor(doctor); // Associate the appointment with the doctor
+            appointment.setAppointmentDate(appointmentDate);
+            appointment.setAppointmentTime(appointmentTime);
+            appointment.setAppointmentEndTime(appointmentEndTime); // Set appointment end time
 
             // Save the appointment details
             appointmentRepository.save(appointment);
 
+            return appointmentEndTime.toString();
+
         } catch (DateTimeParseException e) {
             throw new RuntimeException("Invalid date or time format.");
         }
+    }
+
+    @Override
+    public Patient getPatientById(Integer id) {
+        return patientRepository.findById(id).orElse(null);
     }
 
 

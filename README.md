@@ -5,8 +5,7 @@ The Hospital Management API, developed in Java with Spring Boot, streamlines hos
 ## 🚀 Features
 - Patient registration and management
 - Doctor registration and management
-- Appointment scheduling for patients
-- Medical record keeping
+- Appointment scheduling and management for patients
 
 ## 🛠️ Technologies Used
 - Java
@@ -25,8 +24,7 @@ The Hospital Management API, developed in Java with Spring Boot, streamlines hos
 ## 📡 API Endpoints
 - `/patients`: Manage patient information.
 - `/doctors`: Manage doctor profiles.
-- `/appointments`: Schedule appointments.
-- `/medical-records`: Maintain medical records.
+- `/appointments`: Schedule appointments and Manage appointments.
 
 ## 🌟 License
 This project is licensed under the [Apache License 2.0](LICENSE).

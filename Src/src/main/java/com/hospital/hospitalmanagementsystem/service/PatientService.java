@@ -10,15 +10,17 @@ public interface PatientService {
 
     List<Patient> getPatients();
 
-    String deletePatient(Integer id);
+    void deletePatient(Integer id);
 
     String updateDisease(Integer id, PatientDTO patientDTO);
 
     String updatePatientById(Integer id, Patient patient);
 
 
-    void addPatient(PatientDTO patientDTO);
+    Patient addPatient(PatientDTO patientDTO);
 
 
-    void bookAppointment(Integer id, Integer drid, String date, String time);
+    String bookAppointment(Integer id, Integer drid, String date, String time);
+
+    Patient getPatientById(Integer id);
 }
