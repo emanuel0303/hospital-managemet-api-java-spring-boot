@@ -49,7 +49,7 @@ public class PatientController {
 
     @GetMapping()
     public List<Patient> getPatients() {
-        return getPatientApi.getPatients();
+         return patientService.getPatients();
     }
 
     @GetMapping("/get")
