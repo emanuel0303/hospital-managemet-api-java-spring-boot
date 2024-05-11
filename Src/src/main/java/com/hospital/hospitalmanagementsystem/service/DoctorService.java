@@ -2,7 +2,7 @@ package com.hospital.hospitalmanagementsystem.service;
 
 import com.hospital.hospitalmanagementsystem.dto.DoctorDTO;
 import com.hospital.hospitalmanagementsystem.entity.Doctor;
-import java.time.LocalDateTime;
+
 import java.util.List;
 
 public interface DoctorService {
@@ -10,7 +10,7 @@ public interface DoctorService {
 
     List<Doctor> getDoctors();
     
-    void addDoctor(DoctorDTO doctorDTO);
+    Doctor addDoctor(DoctorDTO doctorDTO);
 
     String deleteDoctor(Integer drid);
 
@@ -19,4 +19,5 @@ public interface DoctorService {
     String updateDoctor(Integer drid, DoctorDTO doctorDTO);
 
 
+    String getDoctorNameById(Integer drid);
 }
