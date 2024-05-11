@@ -36,12 +36,13 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public void addDoctor(DoctorDTO doctorDTO) {
+    public Doctor addDoctor(DoctorDTO doctorDTO) {
         // Map data from DTO to entity
         Doctor doctor = modelMapper.map(doctorDTO, Doctor.class);
 
         // Save the doctor entity
         doctorRepository.save(doctor);
+        return doctor;
     }
     @Override
     public String deleteDoctor(Integer drid) {
@@ -79,7 +80,11 @@ public class DoctorServiceImpl implements DoctorService {
         return "Doctor Updated Successfully";
     }
 
-
+    @Override
+    public String getDoctorNameById(Integer drid) {
+        Doctor doctor = doctorRepository.findById(drid).orElse(null);
+        return (doctor != null) ? doctor.getDoctorname() : null;
+    }
 
 
 }
