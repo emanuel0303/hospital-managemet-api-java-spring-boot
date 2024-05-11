@@ -1,6 +1,8 @@
 package com.hospital.hospitalmanagementsystem.service.impl;
 
 import com.hospital.hospitalmanagementsystem.dto.DoctorDTO;
+import com.hospital.hospitalmanagementsystem.exception.PatientNotFoundException;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import com.hospital.hospitalmanagementsystem.dto.PatientDTO;
 import com.hospital.hospitalmanagementsystem.entity.Appointment;
@@ -18,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -49,14 +50,20 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public String deletePatient(Integer id) {
-        // Check whether the patient is in the database or not
-        Patient patient = patientRepository
-                .findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid Patient id " + id));
+    @Transactional
+    public void deletePatient(Integer patientId) {
+        // Retrieve patient by ID
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new PatientNotFoundException("Patient not found with id: " + patientId));
 
+        // Retrieve appointments associated with the patient
+        List<Appointment> appointments = appointmentRepository.findByPatientId(patientId);
+
+        // Delete appointments associated with the patient
+        appointmentRepository.deleteAll(appointments);
+
+        // Delete the patient
         patientRepository.delete(patient);
-        return "Patient with ID " + id + " deleted successfully.";
     }
 
     @Override
