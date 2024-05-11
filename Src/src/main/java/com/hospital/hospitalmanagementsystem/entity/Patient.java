@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -22,9 +23,12 @@ public class Patient {
     private String email;
     private String disease;
 
-    @ManyToOne
-    @JoinColumn(name = "Doctor_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "Doctor_id", referencedColumnName = "drid")
     private Doctor doctor;
+
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Appointment> appointments;
 
 
 
