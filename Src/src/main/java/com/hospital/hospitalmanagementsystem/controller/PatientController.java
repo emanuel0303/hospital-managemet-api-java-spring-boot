@@ -43,13 +43,13 @@ public class PatientController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addPatient(@RequestBody Patient patient) {
+    public ResponseEntity<String> addPatient(@RequestBody PatientDTO patient) {
         return addPatientApi.addPatient(patient);
     }
 
     @GetMapping()
     public List<Patient> getPatients() {
-        return patientService.getPatients();
+        return getPatientApi.getPatients();
     }
 
     @GetMapping("/get")
@@ -59,40 +59,22 @@ public class PatientController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updatePatientById(@PathVariable Integer id, @RequestBody Patient patient) {
-        updatePatientApi.updatePatient(id, patient);
-        String message = "Patient with ID " + id + " updated successfully.";
-
-        return ResponseEntity.ok().body(message);
+        return updatePatientApi.updatePatient(id, patient);
     }
-
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deletePatientById(@PathVariable Integer id) {
-        deletePatientApi.deletePatientById(id);
-
-        String message = "Patient with ID " + id + " deleted successfully.";
-        return ResponseEntity.ok().body(message);
+        return deletePatientApi.deletePatientById(id);
     }
 
     @PatchMapping("/update-disease/{id}")
     public ResponseEntity<String> updateDisease(@PathVariable Integer id, @RequestBody PatientDTO patientDTO) {
-        patchUpdatePatientApi.updateDisease(id, patientDTO);
-
-        String message = "Patient with ID " + id + " updated successfully.";
-        return ResponseEntity.ok().body(message);
+        return patchUpdatePatientApi.updateDisease(id, patientDTO);
     }
 
     @PostMapping("/book-appointment")
     public ResponseEntity<String> bookAppointment(@RequestBody AppointmentRequest request) {
-        try {
-            // Use the BookAppointmentApi class to book the appointment
-            bookAppointmentApi.bookAppointment(request.getId(), request.getDrid(), request.getDate(), request.getTime());
-
-            return ResponseEntity.ok("Appointment booked successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return bookAppointmentApi.bookAppointment(request.getId(), request.getDrid(), request.getDate(), request.getTime());
     }
-
 
 }
