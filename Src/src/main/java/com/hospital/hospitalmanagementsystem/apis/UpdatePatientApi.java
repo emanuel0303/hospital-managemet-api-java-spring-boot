@@ -3,6 +3,7 @@ package com.hospital.hospitalmanagementsystem.apis;
 import com.hospital.hospitalmanagementsystem.entity.Patient;
 import com.hospital.hospitalmanagementsystem.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,8 +16,9 @@ public class UpdatePatientApi {
         this.patientService = patientService;
     }
 
-    public void updatePatient(Integer id, Patient patient) {
-        // Call the appropriate method in the PatientService to update the patient
+    public ResponseEntity<String> updatePatient(Integer id, Patient patient) {
         patientService.updatePatientById(id, patient);
+        String message = "Patient with ID " + id + " updated successfully.";
+        return ResponseEntity.ok().body(message);
     }
 }
